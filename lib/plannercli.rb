@@ -62,21 +62,25 @@ def main_menu_loop
   end
 
   def return_all_festivals
-    array = []
-    Festival.all.each_with_index do |festival, index| array << "#{index + 1}. #{festival.name} | |Cost: #{festival.cost}| Start Date: #{festival.start_date} | End Date: #{festival.end_date} | Location: #{festival.location}"
+    fests = []
+    Festival.all.each_with_index do |festival, index|
+      array << "#{index + 1}. #{festival.name}" +
+        " | |Cost: #{festival.cost}| " +
+        "Start Date: #{festival.start_date} | " +
+        "End Date: #{festival.end_date} | Location: #{festival.location}"
     end
     puts "\n\n------------------"
-    puts array
+    puts fests
   end
 
   def add_festivals_to_planner
     cli = PlannerCLI.new
-     attendee = cli.create_user
+    attendee = cli.create_user
     loop do
-    puts "Which festival do you want to attend?\n\n"
-      festival = gets.chomp.to_s #Lollapalooza
-      all_festivals = Festival.all.map {|festival| festival.name}
-     # binding.pry
+      puts "Which festival do you want to attend?\n\n"
+      festival = gets.chomp 
+      all_festivals = Festival.all.map { |festival| festival.name }
+
       if all_festivals.include?(festival)
         add_festival = cli.find_festival(festival)
         puts "Name your trip\n\n"
@@ -92,38 +96,37 @@ def main_menu_loop
       end
     end
 
+    def create_user
+      user_hash = {}
+      puts "\nFirst, we need a little information.\n\n"
+      puts "What's your first name?\n\n"
+      user_hash[:first_name] = gets.chomp
+      puts "What's your last name?\n\n"
+      user_hash[:last_name] = gets.chomp
+      puts "What's your location? (format: City, State)\n\n"
+      user_hash[:location] = gets.chomp
+      new_user = User.find_or_create_by(user_hash)
+      new_user
+    end
 
-      def create_user
-        user_hash = {}
-        puts "\nFirst, we need a little information.\n\n"
-        puts "What's your first name?\n\n"
-        user_hash[:first_name] = gets.chomp.to_s
-        puts "What's your last name?\n\n"
-        user_hash[:last_name] = gets.chomp.to_s
-        puts "What's your location? (format: City, State)\n\n"
-        user_hash[:location] = gets.chomp.to_s
-        new_user = User.find_or_create_by(user_hash)
-        new_user
+    def find_festival(festival)
+      festival = Festival.all.find_by(name: festival)
+      festival
+    end
+
+    def return_your_schedule(user_hash)
+      plans = Planner.all.select do |schedule|
+        user_hash[:first_name] == schedule.user.first_name && user_hash[:last_name] == schedule.user.last_name
       end
 
-      def find_festival(festival)
-        festival = Festival.all.find_by(name: festival)
-        festival
+      puts "\n\n"
+      puts "#{user_hash[:first_name]} #{user_hash[:last_name]}'s Schedule:\n\n"
+      plans.each_with_index.map do |event, index|
+        puts "#{index + 1}. #{event.name} " +
+          "| Dates: #{event.festival.start_date}" +
+          "- #{event.festival.end_date} "
       end
-
-      def return_your_schedule(user_hash)
-        plans = Planner.all.select do |schedule|
-          user_hash[:first_name] == schedule.user.first_name && user_hash[:last_name] == schedule.user.last_name
-          # binding.pry
-        end
-        puts "\n\n"
-        puts "#{user_hash[:first_name]} #{user_hash[:last_name]}'s Schedule:\n\n"
-        plans.each_with_index.map do |event, index|
-          puts "#{index + 1}. #{event.name} | Dates: #{event.festival.start_date} - #{event.festival.end_date} "
-        end
-        puts "\n\n--------------------------------------------------\n\n"
-        menu_no_loop
-      end
-
-
+      puts "\n\n--------------------------------------------------\n\n"
+      menu_no_loop
+    end
 end
