@@ -3,8 +3,8 @@ require 'pry'
 class PlannerCLI
 
 def greeting
-puts "We've got 6 big months ahead of us, it's festival season baby!!!!\n\n"
-menu
+  puts "We've got 6 big months ahead of us, it's festival season baby!!!!\n\n"
+  menu
 end
 
 def menu
@@ -28,12 +28,10 @@ def menu_no_loop
   puts "6. Exit\n\n"
 end
 
-
-
 def main_menu_loop
   cli = PlannerCLI.new
   loop do
-  input = gets.chomp.to_s.downcase
+    input = gets.chomp.downcase
     case input
     when "1" || "instructions"
       puts "keep looping"
@@ -44,11 +42,13 @@ def main_menu_loop
     when "4" || "view your schedule"
       puts "\nWhat's your first name?\n\n"
       user_hash = {}
-      user_hash[:first_name] = gets.chomp.to_s
+      user_hash[:first_name] = gets.chomp
       puts "\n\n"
+
       puts "What's your last name?\n\n"
-      user_hash[:last_name] = gets.chomp.to_s
+      user_hash[:last_name] = gets.chomp
       puts "\n\n"
+      
       cli.return_your_schedule(user_hash)
     when "5" || "view the team schedule"
       puts "keep looping"
@@ -60,7 +60,6 @@ def main_menu_loop
       end
     end
   end
-
 
   def return_all_festivals
     array = []
