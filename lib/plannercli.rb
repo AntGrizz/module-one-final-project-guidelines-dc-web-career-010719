@@ -34,7 +34,7 @@ def main_menu_loop
     input = gets.chomp.downcase
     case input
     when "1" || "instructions"
-      puts "keep looping"
+      instructions 
     when "2" || "view festivals"
       cli.return_all_festivals
     when "3" || "add festivals to planner"
@@ -129,4 +129,23 @@ def main_menu_loop
       puts "\n\n--------------------------------------------------\n\n"
       menu_no_loop
     end
+
+    def instructions
+      puts "\nInstructions:
+      
+                -------------------------------------------
+                Choose one of the following menu options:
+                    1. Instructions
+                    2. View festivals by name
+                    3. Add festivals to your planner
+                    4. View your schedule
+                    5. View your team's schedule
+                    6. Exit
+  
+        -  To exit this app, please press '6'.
+        -  You may reference README.md for further instruction.
+                  ____________________________________________
+      "
+    end
+
 end
